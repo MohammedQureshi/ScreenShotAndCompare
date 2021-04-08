@@ -1,5 +1,6 @@
 import javax.imageio.ImageIO;
 import java.awt.*;
+import java.awt.event.InputEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -10,6 +11,29 @@ public class RunScreenShotAndCompare {
     public static void main(String args[]){
         defineScreenShot("https://www.tutorialspoint.com/how-to-compare-two-images-using-java-opencv-library", "BBCScreenShot");
         compareScreenShots("BBCScreenShot", "BBCScreenShot");
+    }
+
+    public static void findMousePosition(){
+        int counter = 0;
+        while(true){
+            counter++;
+            try {
+                Thread.sleep(4000);
+                int mouseY = MouseInfo.getPointerInfo().getLocation().y;
+                int mouseX = MouseInfo.getPointerInfo().getLocation().x;
+                System.out.println("MouseY: " + mouseY + " MouseX: " + mouseX);
+                counter = 0;
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
+    }
+
+    public static void clickOnWebPage(int x, int y) throws AWTException{
+        Robot bot = new Robot();
+        bot.mouseMove(x, y);
+        bot.mousePress(InputEvent.BUTTON1_DOWN_MASK);
+        bot.mouseRelease(InputEvent.BUTTON1_DOWN_MASK);
     }
 
     private static void defineScreenShot(String url, String fileName){
@@ -30,9 +54,11 @@ public class RunScreenShotAndCompare {
         try {
             Process p = Runtime.getRuntime().exec("C:/Program Files (x86)/Google/Chrome/Application/chrome.exe -incognito "+ url);
             Thread.sleep(4000);
+            clickOnWebPage(579,89);
+            Thread.sleep(4000);
             captureScreenShot(fileName);
             p.destroy();
-        } catch (IOException | InterruptedException e) {
+        } catch (IOException | InterruptedException | AWTException e) {
             e.printStackTrace();
         }
     }
@@ -41,7 +67,7 @@ public class RunScreenShotAndCompare {
         BufferedImage img1 = null;
         BufferedImage img2 = null;
         try {
-            img1 = ImageIO.read(new File("output/"+orgionalFile+".png"));
+            img1 = ImageIO.read(new File("original/"+orgionalFile+".png"));
             img2 = ImageIO.read(new File("output/"+screenShotFile+".png"));
         } catch (IOException e) {
             e.printStackTrace();
