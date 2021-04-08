@@ -11,6 +11,9 @@ public class RunScreenShotAndCompare {
     public static void main(String args[]){
         defineScreenShot("https://www.tutorialspoint.com/how-to-compare-two-images-using-java-opencv-library", "BBCScreenShot");
         compareScreenShots("BBCScreenShot", "BBCScreenShot");
+        destoryWindow();
+        defineScreenShot("https://www.tutorialspoint.com/how-to-compare-two-images-using-java-opencv-library", "RandomWebsite");
+        destoryWindow();
     }
 
     public static void findMousePosition(){
@@ -50,17 +53,23 @@ public class RunScreenShotAndCompare {
         }
     }
 
+    private static Process p;
+
     private static void navigateToWebPage(String url, String fileName){
         try {
-            Process p = Runtime.getRuntime().exec("C:/Program Files (x86)/Google/Chrome/Application/chrome.exe -incognito "+ url);
+            p = Runtime.getRuntime().exec("C:/Program Files (x86)/Google/Chrome/Application/chrome.exe -incognito "+ url);
             Thread.sleep(4000);
             clickOnWebPage(579,89);
             Thread.sleep(4000);
             captureScreenShot(fileName);
-            p.destroy();
+
         } catch (IOException | InterruptedException | AWTException e) {
             e.printStackTrace();
         }
+    }
+
+    private static void destoryWindow(){
+        p.destroy();
     }
 
     private static void compareScreenShots(String orgionalFile, String screenShotFile){
